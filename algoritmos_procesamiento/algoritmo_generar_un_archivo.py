@@ -18,9 +18,11 @@ import os
 
 def main():
     # generar lista de fechas disponibles
-    # /Volumes/U/WRF_Granizo path donde se encuentran los archivos
-    # listaDeFechas = [x for x in os.listdir('/Volumes/U/WRF_Granizo') if x.endswith('')]
-    listaDeFechas = ['2017-08-14', '2017-08-15']
+    # Mac /Volumes/U/WRF_Granizo path donde se encuentran los archivos
+    # Linux /media/U/WRF_Granizo
+    # Mac listaDeFechas = [x for x in os.listdir('/Volumes/U/WRF_Granizo') if x.endswith('')]
+    # Linux listaDeFechas = [x for x in os.listdir('/media/U/WRF_Granizo') if x.endswith('')]
+    listaDeFechas = ['2016-12-15', '2016-12-16']
     # obtener coordenadas cañones antigranizo
     dataAntigranizo = pd.read_csv("../data/Coordenadas_caniones.csv")
 
@@ -28,7 +30,6 @@ def main():
     for i in listaDeFechas:
         # nombre temporal de la ruta
         rutaTemporalDeArchivos = "/Volumes/U/WRF_Granizo/{}".format(i)
-        print("* * * * * nombre temporal ruta",rutaTemporalDeArchivos)
 
         # generar lista de archvos para procesamiento
         listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('')]
@@ -37,14 +38,13 @@ def main():
         for j in listaDeArchivos:
             # nombre temporal del archivo a procesar
             nombreTemporalDeArchivo = "{}/{}".format(rutaTemporalDeArchivos, j)
-            print("* * * * * nombre temporal archivo",nombreTemporalDeArchivo)
+
             # leer datos de archivos
             data = pd.read_csv(nombreTemporalDeArchivo)
-            print(data.head())
+
             # determinar la hora de lectura
             arrayTemporalHora = j.split('_')
             nombreTemporalHora = int(arrayTemporalHora[1])
-            print("* * * * * nombre temporal hora",nombreTemporalHora)
 
             # limites longitud > -106.49 y < -97.5
             data = data.loc[data['Long'] > -106.49]
@@ -92,10 +92,16 @@ def main():
             z = np.array(data['Prec'])
             zi = gd((x,y), z, (xi,yi), method='cubic')
 
-            #generar clevs
+            # generar clevs
+            stepVariable = 1
             step = (z.max() - z.min()) / 10
-            #clevs = np.linspace(z.min(), z.max(), 10)
-            clevs = [0,5,10,15,20,25,30,45,60,75]
+
+            # verificar el valor del intervalo
+            if step <= 1:
+                stepVariable = 3
+
+            clevs = np.linspace(z.min(), z.max() + ( step * stepVariable ), 10)
+            #clevs = [0,5,10,15,20,25,30,45,60,75]
 
             #%% contour plot
             cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
@@ -117,11 +123,11 @@ def main():
             cbar.set_label('mm')
             tituloTemporalParaElMapa = "Precipitación para la hora: {}".format(nombreTemporalHora)
             plt.title(tituloTemporalParaElMapa)
-            nombreTemporalParaElMapa = "/Users/jorgemauricio/Documents/Research/Granizo/Maps/{}_{}_2.png".format(i,j)
+            # Mac /Users/jorgemauricio/Documents/Research/proyectoGranizo/Maps/{}_{}.png
+            # Linux /home/jorge/Documents/Research/proyectoGranizo/Maps/{}_{}.png
+            nombreTemporalParaElMapa = "/Users/jorgemauricio/Documents/Research/proyectoGranizo/Maps/{}_{}.png".format(i,j)
             plt.annotate('@2017 INIFAP', xy=(-102,22), xycoords='figure fraction', xytext=(0.45,0.45), color='g', zorder=50)
 
-            print("* * * * *", xC)
-            print("* * * * *", yC)
             plt.savefig(nombreTemporalParaElMapa, dpi=300)
             print('****** Genereate: {}'.format(nombreTemporalParaElMapa))
 
