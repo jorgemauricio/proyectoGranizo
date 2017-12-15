@@ -19,8 +19,8 @@ def main():
 	dataBaseStructureCaniones =  "Canon,Estado,Nombre,Long,Lat,Year,Month,Day,Hour,GraupelWRF,RainWRF,TproWRF\n"
 
 	# Obtener todos los archivos en data
-	listaDeFechas = ['2017-09-01']
-	# listaDeFechas = [x for x in os.listdir('/Volumes/U/WRF_Granizo') if x.endswith('')]
+	# listaDeFechas = ['2017-09-01']
+	listaDeFechas = [x for x in os.listdir('/media/jorge/U/WRF_Granizo') if x.endswith('')]
 
 	# obtener coordenadas cañones dataAntigranizo
 	dataAntigranizo = pd.read_csv("../data/Coordenadas_caniones.csv")
@@ -29,26 +29,29 @@ def main():
 	#%% -106.49 > Long > -97.5
 	#%% 17.43 > Lat > 25.23
 
-	for i in listaDeFechas:
+	for z in listaDeFechas:
 		# nombre temporal de la ruta
-		rutaTemporalDeArchivos = "/Volumes/U/WRF_Granizo/{}".format(i)
-		fecha = i
+		rutaTemporalDeArchivos = "/media/jorge/U/WRF_Granizo/{}".format(z)
+		fecha = z
 
 		# generar lista de archvos para procesamiento
 		listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('')]
 
 		# ciclo de procesamiento
-		for j in listaDeArchivos:
+		for j in range(7,32,1):
+			if len(str(j)) == 1:
+				titulo = "00{}".format(j)
+			else:
+				titulo = "0{}".format(j)
 			# nombre temporal del archivo a procesar
-			nombreTemporalDeArchivo = "{}/{}".format(rutaTemporalDeArchivos, j)
+			nombreTemporalDeArchivo = "{}/Vars_{}".format(rutaTemporalDeArchivos, titulo)
 			print("***** nombre temporal de archivo", nombreTemporalDeArchivo)
 
 			# leer datos WRF de archivos
 			data = pd.read_csv(nombreTemporalDeArchivo)
 
 			# determinar la hora de lectura
-			arrayTemporalHora = j.split('_')
-			nombreTemporalHora = int(arrayTemporalHora[1])
+			nombreTemporalHora = j
 			print("***** nombre temporal hora", nombreTemporalHora)
 
 			# limites longitud > -106.49 y < -97.5

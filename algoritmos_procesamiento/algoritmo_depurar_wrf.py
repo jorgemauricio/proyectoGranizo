@@ -22,7 +22,7 @@ anio = int(tanio)
 mes = int(tmes)
 dia = int(tdia)
 
-for i in range(0,70,1):
+for i in range(0,1450,1):
     if i == 0:
         newDiaString = '{}'.format(dia)
         if len(newDiaString) == 1:
@@ -55,20 +55,20 @@ for i in range(0,70,1):
             newMesString = '0' + newMesString
         fecha = '{}'.format(anio)+"-"+newMesString+"-"+newDiaString
         # /Volumes/U/WRF_Granizo/ dirección en mi Laptop
-        tempPath = "/Volumes/U/WRF_Granizo/{}".format(fecha)
+        tempPath = "/media/jorge/U/WRF_Granizo/{}".format(fecha)
         if os.path.exists(tempPath):
             print("Fecha: {} *** Ok".format(fecha))
-            tempPath2 = "/Volumes/U/WRF_Granizo/{}/Vars_007".format(fecha)
+            tempPath2 = "/media/jorge/U/WRF_Granizo/{}/Vars_007".format(fecha)
             if os.path.isfile(tempPath2):
                 print("***** Fecha {} : Ok".format(fecha))
-                for j in range(32,128,1):
-                    if j < 100:
-                        tempFileName = "Vars_0{}".format(j)
-                    else:
-                        tempFileName = "Vars_{}".format(j)
-                    tempPath3 = "/Volumes/U/WRF_Granizo/{}/{}".format(fecha, tempFileName)
-                    print("Eliminar: {}".format(tempFileName))
-                    os.remove(tempPath3)
+                # for j in range(32,128,1):
+                #     if j < 100:
+                #         tempFileName = "Vars_0{}".format(j)
+                #     else:
+                #         tempFileName = "Vars_{}".format(j)
+                #     tempPath3 = "/Volumes/U/WRF_Granizo/{}/{}".format(fecha, tempFileName)
+                #     print("Eliminar: {}".format(tempFileName))
+                #     os.remove(tempPath3)
             else:
                 fechasSinDatos.append(fecha)
                 print("***** Fecha {} : Error".format(fecha))

@@ -100,5 +100,8 @@ ENV/
 # Maps
 /Maps
 
+# data
+/data
+
 # mypy
 .mypy_cache/
