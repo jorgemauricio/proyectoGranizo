@@ -22,7 +22,7 @@ def main():
     # Linux /media/U/WRF_Granizo
     # Mac listaDeFechas = [x for x in os.listdir('/Volumes/U/WRF_Granizo') if x.endswith('')]
     # Linux listaDeFechas = [x for x in os.listdir('/media/U/WRF_Granizo') if x.endswith('')]
-    listaDeFechas = ['2016-12-15', '2016-12-16']
+    listaDeFechas = ['2017-09-01', '2017-09-02', '2017-09-03']
     # obtener coordenadas cañones antigranizo
     dataAntigranizo = pd.read_csv("../data/Coordenadas_caniones.csv")
 
