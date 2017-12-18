@@ -152,29 +152,37 @@ def main():
 	textFile.close()
 
 def convertDBZtoPrec(dbz):
-    """
-    Funcion para convertir el valor de dbz a lluvia
-    param: dbz :  valor
-    """
-    rain = ((10**(dbz/10))/200)**(5/8)
-    if rain <= 1:
-        return 0
-    else:
-        return rain
+	"""
+	Función para convertir el valor de dbz a lluvia
+	param: dbz: valor
+	"""
+	rain = ((10**(dbz/10))/200)**(5/8)
+	if rain <= 1:
+		return 0.0
+	elif rain == np.inf:
+		return 0.0
+	elif rain == np.nan:
+		return 0.0
+	else:
+		return rain
 
 def convertDBZtoGranizo(dbz):
-    """
-    Funcion para convertir el valor de dbz a granizo
-    param: dbz :  valor
-    """
-    if dbz >= 55:
-        granizo = ((10**(dbz/10))/200)**(5/8)
-        if granizo <= 1:
-            return 0
-        else:
-            return granizo
-    else:
-        return 0
+	"""
+	Función para convertir el valor de dbz a lluvia
+	param: dbz: valor
+	"""
+	if dbz >= 55:
+		granizo = ((10**(dbz/10))/200)**(5/8)
+		if granizo <= 1:
+			return 0.0
+		elif granizo == np.inf:
+			return 0.0
+		elif granizo == np.nan:
+			return 0.0
+		else:
+			return granizo
+	else:
+		return 0.0
 
 if __name__ == '__main__':
     main()
