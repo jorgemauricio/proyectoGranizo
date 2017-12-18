@@ -45,14 +45,14 @@ def main():
 				titulo = "0{}".format(j)
 			# nombre temporal del archivo a procesar
 			nombreTemporalDeArchivo = "{}/Vars_{}".format(rutaTemporalDeArchivos, titulo)
-			print("***** nombre temporal de archivo", nombreTemporalDeArchivo)
+			#print("***** nombre temporal de archivo", nombreTemporalDeArchivo)
 
 			# leer datos WRF de archivos
 			data = pd.read_csv(nombreTemporalDeArchivo)
 
 			# determinar la hora de lectura
 			nombreTemporalHora = j
-			print("***** nombre temporal hora", nombreTemporalHora)
+			#print("***** nombre temporal hora", nombreTemporalHora)
 
 			# limites longitud > -106.49 y < -97.5
 			data = data.loc[data['Long'] > -106.49]
@@ -71,7 +71,7 @@ def main():
 			for index, row in dataAntigranizo.iterrows():
 				# determinar fecha
 				year, month, day = fecha.split('-')
-
+				#print("***** {},{},{}".format(year, month, day))
 				# generar np arrays
 				Lat = np.array(data['Lat'])
 				Long = np.array(data['Long'])
