@@ -158,7 +158,11 @@ def convertDBZtoPrec(dbz):
     """
     rain = ((10**(dbz/10))/200)**(5/8)
     if rain <= 1:
-        return 0
+        return 0.0
+    elif rain == np.inf:
+    	return 0.0
+    elif rain == np.nan:
+        return 0.0
     else:
         return rain
 
@@ -170,7 +174,11 @@ def convertDBZtoGranizo(dbz):
     if dbz >= 55:
         granizo = ((10**(dbz/10))/200)**(5/8)
         if granizo <= 1:
-            return 0
+            return 0.0
+        elif granizo == np.inf:
+        	return 0.0
+        elif granizo == np.nan:
+        	return 0.0
         else:
             return granizo
     else:
