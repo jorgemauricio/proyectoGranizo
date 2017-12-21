@@ -4,13 +4,13 @@
 Created on Mon Jul 17 16:17:25 2017
 @author: jorgemauricio
 """
-#%% librerias
+# librerias
 import pandas as pd
 import os
 import math
 import numpy as np
 
-
+# Programa principal
 def main():
 	# limpiar la terminal
 	os.system('clear')
@@ -43,6 +43,7 @@ def main():
 				titulo = "00{}".format(j)
 			else:
 				titulo = "0{}".format(j)
+
 			# nombre temporal del archivo a procesar
 			nombreTemporalDeArchivo = "{}/Vars_{}".format(rutaTemporalDeArchivos, titulo)
 			#print("***** nombre temporal de archivo", nombreTemporalDeArchivo)
@@ -68,6 +69,7 @@ def main():
 			# generar granizo
 			data['Granizo'] = data.apply(lambda x: convertDBZtoGranizo(x['Ref (dbz)']), axis=1)
 
+			# ciclo para generar información
 			for index, row in dataAntigranizo.iterrows():
 				# determinar fecha
 				year, month, day = fecha.split('-')
