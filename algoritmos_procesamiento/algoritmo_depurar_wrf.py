@@ -6,6 +6,7 @@ Created on Mon Jul 17 16:17:25 2017
 @author: jorgemauricio
 """
 
+#librerias
 import os
 import pandas as pd
 import numpy as np
