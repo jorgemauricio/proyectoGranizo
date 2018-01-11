@@ -56,8 +56,9 @@ def main():
 
 		# fecha y minutos
 		tempfecha = nombreEnArray[4]
+		minutos = nombreEnArray[5]
 
-		fecha, temp1, minutos = tempfecha.split('-')
+		fecha, temp1, temp2 = tempfecha.split('-')
 
 		# guardar a CSV
 		nombreArchivoParaPandas = guardarCSV(dataText, fecha, minutos)
@@ -113,8 +114,8 @@ def main():
 		if step <= 1:
 		    stepVariable = 3
 
-		clevs = np.linspace(z.min(), z.max() + ( step * stepVariable ), 10)
-		#clevs = [0,5,10,15,20,25,30,45,60,75]
+		#clevs = np.linspace(z.min(), z.max() + ( step * stepVariable ), 10)
+		clevs = [0,5,10,15,20,25,30,45,60,75]
 
 		#%% contour plot
 		cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
