@@ -103,5 +103,8 @@ ENV/
 # data
 /data
 
+# temp
+/temp
+
 # mypy
 .mypy_cache/
