@@ -40,147 +40,164 @@ def main():
 	#%% generar info
 	#%% -106.49 > Long > -97.5
 	#%% 17.43 > Lat > 25.23
-	
-	# ruta temporal archivo
-	rutaTemporalDeArchivos = "data/hdf5"
+
+	# ruta temporal folders
+	rutaTemporalDeArchivos = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04"
 	# generar lista de archvos para procesamiento
-	listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('.HDF5')]
-	
+	listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('')]
+
 	# ciclo de procesamiento
-	for nombre in listaDeArchivos:
+	for folderAnio in listaDeArchivos:
 
 		# ruta temporal de archivo
-		nombreTemporalArchivo = "data/hdf5/{}".format(nombre)
+		nombreTemporalDelFolderAnio = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04/{}".format(folderAnio)
 
-		#lectura del hdf5
-		f = h5py.File(nombreTemporalArchivo, 'r')
+		# lista de archivos diarios
+		listaDeArchivosDeDias = [x for x in os.listdir(nombreTemporalDelFolderAnio) if x.endswith('')]
 
-		# variable temporal para procesar el hdf5
-		grid = f['Grid']
+		for folderDia in listaDeArchivosDeDias:
 
-		# arrays de numpy
-		lon = np.array(grid['lon'])
-		lat = np.array(grid['lat'])
-		precipitation = np.array(grid['precipitationCal'])
+			# ruta temporal de archivo de dias
+			nombreTemporalDelFolderDia = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04/{}/{}".format(folderAnio,folderDia)
 
-		# crear la variable que guardara el texto
-		dataText = "Long,Lat,Prec\n"
-		for i in range(lon.shape[0]):
-		    for j in range(lat.shape[0]):
-		        tempText = "{},{},{}\n".format(lon[i], lat[j], precipitation[i,j])
-		        dataText += tempText
-		
-		# generar variables extras
-		nombreEnArray = nombre.split('.')
+			# lista de archivos en folder diarios
+			listaDeArchivosEnFolderDia = [x for x in os.listdir(nombreTemporalDelFolderDia) if x.endswith('.HDF5')]
 
-		# fecha y minutos
-		tempfecha = nombreEnArray[4]
-		minutos = nombreEnArray[5]
+			# for
+			for nombreDelArchivo in listaDeArchivosEnFolderDia:
 
-		fecha, temp1, temp2 = tempfecha.split('-')
+				# nombre temporal del archivo a procesar
+				nombreTemporalArchivo = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04/{}/{}/{}".format(folderAnio,folderDia, nombreDelArchivo)
 
-		# guardar a CSV
-		nombreArchivoParaPandas = guardarCSV(dataText, fecha, minutos)
+				#lectura del hdf5
+				f = h5py.File(nombreTemporalArchivo, 'r')
 
-		# close hdf5
-		f.close()
+				# variable temporal para procesar el hdf5
+				grid = f['Grid']
 
-		# leer archivo en pandas
-		data = pd.read_csv(nombreArchivoParaPandas)
-	
-		# determinar la hora de lectura
-		nombreTemporalHora = minutos
-		#print("***** nombre temporal hora", nombreTemporalHora)
+				# arrays de numpy
+				lon = np.array(grid['lon'])
+				lat = np.array(grid['lat'])
+				precipitation = np.array(grid['precipitationCal'])
 
-		# limites longitud > -106.49 y < -97.5
-		data = data.loc[data['Long'] > -106.49]
-		data = data.loc[data['Long'] < -97.5]
+				# crear la variable que guardara el texto
+				dataText = "Long,Lat,Prec\n"
+				for i in range(lon.shape[0]):
+				    for j in range(lat.shape[0]):
+				        tempText = "{},{},{}\n".format(lon[i], lat[j], precipitation[i,j])
+				        dataText += tempText
 
-		# limites latitud > 17.43 y < 25.23
-		data = data.loc[data['Lat'] > 17.43]
-		data = data.loc[data['Lat'] < 25.23]
+				# generar variables extras
+				nombreEnArray = nombre.split('.')
 
-		# ciclo para generar información
-		for index, row in dataAntigranizo.iterrows():
-			# determinar fecha
-			#year, month, day = fecha.split('-')
-			year = fecha[0:4]
-			month = fecha[4:6]
-			day = fecha[6:8]
+				# fecha y minutos
+				tempfecha = nombreEnArray[4]
+				minutos = nombreEnArray[5]
 
-			#print("***** {},{},{}".format(year, month, day))
-			# generar np arrays
-			Lat = np.array(data['Lat'])
-			Long = np.array(data['Long'])
-			Rain = np.array(data['Prec'])
+				fecha, temp1, temp2 = tempfecha.split('-')
 
-			# Punto a evaluar
-			pointLat = float(row['Lat'])
-			pointLong = float(row['Long'])
-			pointEstado = row['Estado']
-			pointNumber = row['ID']
-			pointNombre = row['Nombre']
+				# guardar a CSV
+				nombreArchivoParaPandas = guardarCSV(dataText, fecha, minutos)
 
-			# distancias
-			d1 = 0.0
-			d2 = 0.0
-			d3 = 0.0
-			pointIndex1 = 0.0
-			pointIndex2 = 0.0
-			pointIndex3 = 0.0
+				# close hdf5
+				f.close()
 
-			# Selección de los puntos para interpolación
-			for i in range(len(Lat)):
-				distanceBetweenPoints = 0.0
-				differenceX = pointLong - Long[i]
-				differenceY = pointLat - Lat[i]
-				sumDifferenceXY = pow(differenceX, 2.0) + pow(differenceY, 2.0)
-				distanceBetweenPoints = math.sqrt(sumDifferenceXY)
-				if i == 0:
-					d1 = distanceBetweenPoints
-					pointIndex1 = i
-					d2 = distanceBetweenPoints
-					pointIndex2 = i
-					d3 = distanceBetweenPoints
-					pointIndex3 = i
-				if distanceBetweenPoints < d1:
-					d3 = d2
-					pointIndex3 = pointIndex2
-					d2 = d1
-					pointIndex2 = pointIndex1
-					d1 = distanceBetweenPoints
-					pointIndex1 = i
-				if distanceBetweenPoints > d1 and distanceBetweenPoints < d2:
-					d3 = d2
-					pointIndex3 = pointIndex2
-					d2 = distanceBetweenPoints
-					pointIndex2 = i
-				if distanceBetweenPoints > d2 and distanceBetweenPoints < d3:
-					d3 = distanceBetweenPoints
-					pointIndex3 = i
+				# leer archivo en pandas
+				data = pd.read_csv(nombreArchivoParaPandas)
 
-			# intepolación
-			k = 2.0
-			w1 = 0.0
-			w2 = 0.0
-			w3 = 0.0
-			zGraupel = 0.0
+				# determinar la hora de lectura
+				nombreTemporalHora = minutos
+				#print("***** nombre temporal hora", nombreTemporalHora)
 
-			inverseSum = pow((1 / d1),k) + pow((1 / d2),k) + pow((1 / d3),k)
-			w1 = 1 / pow(d1,k) / inverseSum
-			w2 = 1 / pow(d2,k) / inverseSum
-			w3 = 1 / pow(d3,k) / inverseSum
+				# limites longitud > -106.49 y < -97.5
+				data = data.loc[data['Long'] > -106.49]
+				data = data.loc[data['Long'] < -97.5]
 
-			zRain = (w1 * Rain[pointIndex1]) + (w2 * Rain[pointIndex2]) + (w3 * Rain[pointIndex3])
+				# limites latitud > 17.43 y < 25.23
+				data = data.loc[data['Lat'] > 17.43]
+				data = data.loc[data['Lat'] < 25.23]
 
-			# Estructura
-			dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zRain)
+				# ciclo para generar información
+				for index, row in dataAntigranizo.iterrows():
+					# determinar fecha
+					#year, month, day = fecha.split('-')
+					year = fecha[0:4]
+					month = fecha[4:6]
+					day = fecha[6:8]
 
-	#%% Guardar a CSV
-	fileName = 'data/dataFromCanionesTestImer.csv'
-	textFile = open(fileName, "w")
-	textFile.write(dataBaseStructureCaniones)
-	textFile.close()
+					#print("***** {},{},{}".format(year, month, day))
+					# generar np arrays
+					Lat = np.array(data['Lat'])
+					Long = np.array(data['Long'])
+					Rain = np.array(data['Prec'])
+
+					# Punto a evaluar
+					pointLat = float(row['Lat'])
+					pointLong = float(row['Long'])
+					pointEstado = row['Estado']
+					pointNumber = row['ID']
+					pointNombre = row['Nombre']
+
+					# distancias
+					d1 = 0.0
+					d2 = 0.0
+					d3 = 0.0
+					pointIndex1 = 0.0
+					pointIndex2 = 0.0
+					pointIndex3 = 0.0
+
+					# Selección de los puntos para interpolación
+					for i in range(len(Lat)):
+						distanceBetweenPoints = 0.0
+						differenceX = pointLong - Long[i]
+						differenceY = pointLat - Lat[i]
+						sumDifferenceXY = pow(differenceX, 2.0) + pow(differenceY, 2.0)
+						distanceBetweenPoints = math.sqrt(sumDifferenceXY)
+						if i == 0:
+							d1 = distanceBetweenPoints
+							pointIndex1 = i
+							d2 = distanceBetweenPoints
+							pointIndex2 = i
+							d3 = distanceBetweenPoints
+							pointIndex3 = i
+						if distanceBetweenPoints < d1:
+							d3 = d2
+							pointIndex3 = pointIndex2
+							d2 = d1
+							pointIndex2 = pointIndex1
+							d1 = distanceBetweenPoints
+							pointIndex1 = i
+						if distanceBetweenPoints > d1 and distanceBetweenPoints < d2:
+							d3 = d2
+							pointIndex3 = pointIndex2
+							d2 = distanceBetweenPoints
+							pointIndex2 = i
+						if distanceBetweenPoints > d2 and distanceBetweenPoints < d3:
+							d3 = distanceBetweenPoints
+							pointIndex3 = i
+
+					# intepolación
+					k = 2.0
+					w1 = 0.0
+					w2 = 0.0
+					w3 = 0.0
+					zGraupel = 0.0
+
+					inverseSum = pow((1 / d1),k) + pow((1 / d2),k) + pow((1 / d3),k)
+					w1 = 1 / pow(d1,k) / inverseSum
+					w2 = 1 / pow(d2,k) / inverseSum
+					w3 = 1 / pow(d3,k) / inverseSum
+
+					zRain = (w1 * Rain[pointIndex1]) + (w2 * Rain[pointIndex2]) + (w3 * Rain[pointIndex3])
+
+					# Estructura
+					dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zRain)
+
+			#%% Guardar a CSV
+			fileName = 'data/dataFromCanionesTestNASA.csv'
+			textFile = open(fileName, "w")
+			textFile.write(dataBaseStructureCaniones)
+			textFile.close()
 
 def guardarCSV(variableTexto, fecha, minutos):
 	"""
