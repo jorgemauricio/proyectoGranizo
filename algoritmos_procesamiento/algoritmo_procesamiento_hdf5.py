@@ -27,7 +27,7 @@ def main():
 
 	# obtener archivos
 	listaDeArchivos = [x for x in os.listdir('data/hdf5') if x.endswith('HDF5')]
-
+	# print(listaDeArchivos)
 	# ciclo de procesamiento de datos
 	for nombre in listaDeArchivos:
 		# ruta temporal de archivo
@@ -43,13 +43,14 @@ def main():
 		lon = np.array(grid['lon'])
 		lat = np.array(grid['lat'])
 		precipitation = np.array(grid['precipitationCal'])
-
+		
 		# crear la variable que guardara el texto
 		dataText = "Long,Lat,Prec\n"
 		for i in range(lon.shape[0]):
 		    for j in range(lat.shape[0]):
 		        tempText = "{},{},{}\n".format(lon[i], lat[j], precipitation[i,j])
 		        dataText += tempText
+		
 		
 		# generar variables extras
 		nombreEnArray = nombre.split('.')
@@ -112,10 +113,10 @@ def main():
 
 		# verificar el valor del intervalo
 		if step <= 1:
-		    stepVariable = 3
+		    stepVariable = 5
 
-		#clevs = np.linspace(z.min(), z.max() + ( step * stepVariable ), 10)
-		clevs = [0,5,10,15,20,25,30,45,60,75]
+		clevs = np.linspace(z.min(), z.max() + 5, 10)
+		#clevs = [0,5,10,15,20,25,30,45,60,75]
 
 		#%% contour plot
 		cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
@@ -137,9 +138,9 @@ def main():
 		cbar.set_label('mm')
 		tituloTemporalParaElMapa = "Precipitación {} {}".format(fecha, minutos)
 		plt.title(tituloTemporalParaElMapa)
-		# Mac /Users/jorgemauricio/Documents/Research/proyectoGranizo/Maps/{}_{}.png
-		# Linux /home/jorge/Documents/Research/proyectoGranizo/Maps/{}_{}.png
-		nombreTemporalParaElMapa = "/Users/jorgemauricio/Documents/Research/proyectoGranizo/Maps/{}_{}.png".format(fecha,minutos)
+		# Mac /Users/jorgemauricio/Documents/Research/proyectoGranizo/data/Maps/{}_{}.png
+		# Linux /home/jorge/Documents/Research/proyectoGranizo/data/Maps/{}_{}.png
+		nombreTemporalParaElMapa = "/home/jorge/Documents/Research/proyectoGranizo/data/Maps/{}_{}.png".format(fecha,minutos)
 		plt.annotate('@2018 INIFAP', xy=(-102,22), xycoords='figure fraction', xytext=(0.45,0.45), color='g', zorder=50)
 
 		plt.savefig(nombreTemporalParaElMapa, dpi=300)
@@ -168,7 +169,6 @@ def guardarCSV(variableTexto, fecha, minutos):
 	textFile = open(fileName, "w")
 	textFile.write(variableTexto)
 	textFile.close()
-
 	return fileName
 
 
