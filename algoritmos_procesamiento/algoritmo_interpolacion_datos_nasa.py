@@ -42,7 +42,7 @@ def main():
 	#%% 17.43 > Lat > 25.23
 
 	# ruta temporal folders
-	rutaTemporalDeArchivos = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04"
+	rutaTemporalDeArchivos = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.04"
 	# generar lista de archvos para procesamiento
 	listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('')]
 
@@ -50,7 +50,7 @@ def main():
 	for folderAnio in listaDeArchivos:
 
 		# ruta temporal de archivo
-		nombreTemporalDelFolderAnio = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04/{}".format(folderAnio)
+		nombreTemporalDelFolderAnio = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.04/{}".format(folderAnio)
 
 		# lista de archivos diarios
 		listaDeArchivosDeDias = [x for x in os.listdir(nombreTemporalDelFolderAnio) if x.endswith('')]
@@ -58,7 +58,7 @@ def main():
 		for folderDia in listaDeArchivosDeDias:
 
 			# ruta temporal de archivo de dias
-			nombreTemporalDelFolderDia = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04/{}/{}".format(folderAnio,folderDia)
+			nombreTemporalDelFolderDia = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.04/{}/{}".format(folderAnio,folderDia)
 
 			# lista de archivos en folder diarios
 			listaDeArchivosEnFolderDia = [x for x in os.listdir(nombreTemporalDelFolderDia) if x.endswith('.HDF5')]
@@ -67,7 +67,7 @@ def main():
 			for nombreDelArchivo in listaDeArchivosEnFolderDia:
 
 				# nombre temporal del archivo a procesar
-				nombreTemporalArchivo = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gob/data/GPM_3IMERGHHL.04/{}/{}/{}".format(folderAnio,folderDia, nombreDelArchivo)
+				nombreTemporalArchivo = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.04/{}/{}/{}".format(folderAnio,folderDia, nombreDelArchivo)
 
 				#lectura del hdf5
 				f = h5py.File(nombreTemporalArchivo, 'r')
@@ -88,7 +88,7 @@ def main():
 				        dataText += tempText
 
 				# generar variables extras
-				nombreEnArray = nombre.split('.')
+				nombreEnArray = nombreDelArchivo.split('.')
 
 				# fecha y minutos
 				tempfecha = nombreEnArray[4]
@@ -193,11 +193,11 @@ def main():
 					# Estructura
 					dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zRain)
 
-			#%% Guardar a CSV
-			fileName = 'data/dataFromCanionesTestNASA.csv'
-			textFile = open(fileName, "w")
-			textFile.write(dataBaseStructureCaniones)
-			textFile.close()
+	#%% Guardar a CSV
+	fileName = 'data/dataFromCanionesTestNASA.csv'
+	textFile = open(fileName, "w")
+	textFile.write(dataBaseStructureCaniones)
+	textFile.close()
 
 def guardarCSV(variableTexto, fecha, minutos):
 	"""
