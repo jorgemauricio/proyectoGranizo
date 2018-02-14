@@ -193,6 +193,8 @@ def main():
 					# Estructura
 					dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zRain)
 
+				eliminarCSVTemporal(nombreArchivoParaPandas)
+
 	#%% Guardar a CSV
 	fileName = 'data/dataFromCanionesTestNASA.csv'
 	textFile = open(fileName, "w")
@@ -210,5 +212,8 @@ def guardarCSV(variableTexto, fecha, minutos):
 	textFile.close()
 	return fileName
 
+def eliminarCSVTemporal(nombreDelArchivo):
+	os.remove(nombreDelArchivo)
+
 if __name__ == '__main__':
-    main()
+	main()
