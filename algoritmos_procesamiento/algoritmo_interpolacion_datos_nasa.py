@@ -2,16 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 #######################################
-# Script que permite la interpolación de los
-# datos de precipitación de la NASA
+# Script que permite inteporlar datos
+# de precipitación de la NASA
 # Author: Jorge Mauricio
 # Email: jorge.ernesto.mauricio@gmail.com
 # Date: 2018-02-01
 # Version: 1.0
 #######################################
-"""
-#!/usr/bin/env python3 # -*- coding: utf-8 -*-
-"""
 Created on Mon Jul 17 16:17:25 2017
 @author: jorgemauricio
 """
@@ -40,12 +37,12 @@ def main():
 	#%% generar info
 	#%% -106.49 > Long > -97.5
 	#%% 17.43 > Lat > 25.23
-	
+
 	# ruta temporal archivo
 	rutaTemporalDeArchivos = "data/hdf5"
 	# generar lista de archvos para procesamiento
 	listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('.HDF5')]
-	
+
 	# ciclo de procesamiento
 	for nombre in listaDeArchivos:
 
@@ -69,7 +66,7 @@ def main():
 		    for j in range(lat.shape[0]):
 		        tempText = "{},{},{}\n".format(lon[i], lat[j], precipitation[i,j])
 		        dataText += tempText
-		
+
 		# generar variables extras
 		nombreEnArray = nombre.split('.')
 
@@ -87,7 +84,7 @@ def main():
 
 		# leer archivo en pandas
 		data = pd.read_csv(nombreArchivoParaPandas)
-	
+
 		# determinar la hora de lectura
 		nombreTemporalHora = minutos
 		#print("***** nombre temporal hora", nombreTemporalHora)
