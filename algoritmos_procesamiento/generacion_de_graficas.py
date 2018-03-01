@@ -31,8 +31,11 @@ def main():
     # Linux path = "/home/jorge/Documents/Research/proyectoGranizo"
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
+    # número de prueba
+    prueba = 5
+    
     # nombre del archivo
-    nombreTemporalArchivo = "{}/data/Resultado.csv".format(path)
+    nombreTemporalArchivo = "{}/data/Resultado_{}.csv".format(path, prueba)
 
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
@@ -84,7 +87,7 @@ def main():
         ax.set_title(tituloGrafica)
 
         # crear anotación
-        ax.annotate('Evento', xy=(x[e.argmax()], y.max()/2), xytext=(x[e.argmax()]+1, y.max()/2), arrowprops=dict(facecolor='red', shrink=0.02))
+        ax.annotate('Evento', xy=(x[e.argmax()]+1, y.max()/2), xytext=(x[e.argmax()]+2, y.max()/2), arrowprops=dict(facecolor='red', shrink=0.02))
 
         # guardar gráfica
         nombreTemporalGrafica = "data/graphs/{}_{}-{}-{}".format(nombreEstacion, anio, mes, dia)
@@ -92,6 +95,10 @@ def main():
 
         # print
         print("Graph: {} Fecha: {}-{}-{}".format(nombreEstacion, anio, mes, dia))
+
+    # zip imagenes
+    comando = "zip -r data/prueba{}.zip data/graphs".format(prueba)
+    os.system(comando)
 
 
 # declarar función main

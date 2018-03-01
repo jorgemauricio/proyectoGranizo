@@ -63,25 +63,31 @@ def main():
         #print(dataTemp.head(30))
 
         # crear columna de diferencia tiempo previo
-        dataTemp["diff"] = abs(dataTemp["RainIMR"] - dataTemp["RainIMR"].shift(1))
+        dataTemp["diff_previa"] = abs(dataTemp["RainIMR"] - dataTemp["RainIMR"].shift(-1))
 
         # crear columna de diferencia tiempo posterior
-        dataTemp["diff_post"] = abs(dataTemp["RainIMR"] - dataTemp["RainIMR"].shift(-1))
+        dataTemp["diff_posterior"] = abs(dataTemp["RainIMR"] - dataTemp["RainIMR"].shift(1))
 
         # crear columna de siguiente valor
-        dataTemp["RainIMR_Siguiente"] = dataTemp["RainIMR"].shift(-1)
+        dataTemp["RainIMR_posterior_1"] = dataTemp["RainIMR"].shift(1)
 
-        # generar rango de diff
-        dataTemp["Rango"] = dataTemp.apply(lambda x: generarRango(x["diff"]), axis=1)
+        # crear columna de siguiente valor
+        dataTemp["RainIMR_posterior_2"] = dataTemp["RainIMR"].shift(2)
+
+        # generar rango previo de diff
+        dataTemp["Rango_previo"] = dataTemp.apply(lambda x: generarRangoPrevio(x["diff_previa"]), axis=1)
+
+        # generar rango posterios de diff
+        dataTemp["Rango_posterior"] = dataTemp.apply(lambda x: generarRangoPosterior(x["diff_posterior"]), axis=1)
 
         # generar validación de evento en tiempo
-        dataTemp["validacionEvento"] = dataTemp.apply(lambda x: validacionSeguimiento(x["RainIMR"], x["RainIMR_Siguiente"]), axis=1)
+        dataTemp["validacionEvento"] = dataTemp.apply(lambda x: validacionSeguimiento(x["RainIMR"], x["RainIMR_posterior_1"], x["RainIMR_posterior_2"]), axis=1)
 
         # eliminar datos nulos
         dataTemp = dataTemp.fillna(value=0)
 
         # evitar columnas ajenas
-        dataTemp = dataTemp[["Canon", "Estado", "Nombre", "Long", "Lat", "Year", "Month", "Day", "Hour", "RainIMR", "RainIMR_Siguiente", "diff", "diff_post", "Rango", "validacionEvento", "Fecha", "Hora"]]
+        dataTemp = dataTemp[['Canon', 'Estado', 'Nombre', 'Long', 'Lat', 'Year', 'Month', 'Day', 'Hour', 'RainIMR', 'RainIMR_posterior_1', 'RainIMR_posterior_2', 'diff_previa', 'diff_posterior', 'Rango_previo', 'Rango_posterior', 'validacionEvento', 'Fecha', 'Hora']]
 
         # agregar df temporal a frames
         frames.append(dataTemp)
@@ -93,35 +99,51 @@ def main():
     data = pd.concat(frames)
 
     # generar variables descriptivas
-    for rango in data["Rango"].unique():
-        data[rango] = [1 if x == rango else 0 for x in data["Rango"]]
+    for rango in data["Rango_previo"].unique():
+        data[rango] = [1 if x == rango else 0 for x in data["Rango_previo"]]
 
     # guardar archivo a CSV
-    nombreArchivoFinal = "{}/data/Resultado.csv".format(path)
+    nombreArchivoFinal = "{}/data/Resultado_6.csv".format(path)
     data.to_csv(nombreArchivoFinal, index=False)
 
-def generarRango(valor):
+def generarRangoPrevio(valor):
     if valor < 1:
-        return "0"
+        return "0pre"
     if valor >= 1 and valor <= 5:
-        return "1-5"
+        return "1-5pre"
     if valor > 5 and valor <= 10:
-        return "5-10"
+        return "5-10pre"
     if valor > 10 and valor <= 15:
-        return "10-15"
+        return "10-15pre"
     if valor > 15 and valor <= 20:
-        return "15-20"
+        return "15-20pre"
     if valor > 20 and valor <= 25:
-        return "20-25"
+        return "20-25pre"
     if valor > 25 and valor <= 30:
-        return "25-30"
+        return "25-30pre"
     if valor > 30:
-        return ">30"
+        return ">30pre"
 
-def validacionSeguimiento(valorActual, valorPost):
-    if valorActual == 0 and valorPost == 0:
-        return 0
-    elif valorActual > 15 and valorPost == 0:
+def generarRangoPosterior(valor):
+    if valor < 1:
+        return "0post"
+    if valor >= 1 and valor <= 5:
+        return "1-5post"
+    if valor > 5 and valor <= 10:
+        return "5-10post"
+    if valor > 10 and valor <= 15:
+        return "10-15post"
+    if valor > 15 and valor <= 20:
+        return "15-20post"
+    if valor > 20 and valor <= 25:
+        return "20-25post"
+    if valor > 25 and valor <= 30:
+        return "25-30post"
+    if valor > 30:
+        return ">30post"
+
+def validacionSeguimiento(valorActual, valorPost, valorPost2):
+    if valorActual > 20 and valorPost == 0 and valorPost2 == 0:
         return 1
     else:
         return 0
