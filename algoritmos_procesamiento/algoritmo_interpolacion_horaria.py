@@ -31,7 +31,7 @@ def main():
 	listaDeFechas = [x for x in os.listdir('/media/jorge/U/WRF_Granizo') if x.endswith('')]
 
 	# obtener coordenadas cañones dataAntigranizo
-	dataAntigranizo = pd.read_csv("../data/Coordenadas_caniones.csv")
+	dataAntigranizo = pd.read_csv("data/Coordenadas_caniones.csv")
 
 	#%% generar info
 	#%% -106.49 > Long > -97.5
@@ -156,7 +156,7 @@ def main():
 				dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zGraupel, zRain, zTpro)
 
 	#%% Guardar a CSV
-	fileName = '../data/dataFromCanionesTest.csv'
+	fileName = 'data/datos_inteporlados_1hr_wrf.csv'
 	textFile = open(fileName, "w")
 	textFile.write(dataBaseStructureCaniones)
 	textFile.close()
