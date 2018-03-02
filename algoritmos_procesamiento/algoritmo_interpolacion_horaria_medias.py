@@ -148,11 +148,7 @@ def main():
 				dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora+0.5, zGraupel*math.sin(.25), zRain*math.sin(.25), zTpro*math.sin(.25))
 
 	#%% Guardar a CSV
-<<<<<<< HEAD
 	fileName = 'data/datos_inteporlados_30min_wrf.csv'
-=======
-	fileName = '../data/dataFromCanionesTest_medias.csv'
->>>>>>> 8d79fd2808e036be4f119db843af5d4e68328f76
 	textFile = open(fileName, "w")
 	textFile.write(dataBaseStructureCaniones)
 	textFile.close()
