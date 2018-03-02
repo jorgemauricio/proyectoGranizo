@@ -21,6 +21,10 @@ import os
 import math
 import numpy as np
 import h5py
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+from scipy.interpolate import griddata as gd
+from time import gmtime, strftime
 
 # Programa principal
 def main():
@@ -29,6 +33,8 @@ def main():
 
 	# Estructura final de base de datos
 	dataBaseStructureCaniones =  "Canon,Estado,Nombre,Long,Lat,Year,Month,Day,Hour,RainIMR\n"
+
+	# ruta para guardar nombreArchivoParaPandas
 
 	# Obtener todos los archivos en data
 	#listaDeFechas = ['2018-01-01']
@@ -45,7 +51,7 @@ def main():
 	rutaTemporalDeArchivos = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.04"
 	# generar lista de archvos para procesamiento
 	#listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('')]
-	listaDeArchivos = ['2016']
+	listaDeArchivos = ['2014']
 	# ciclo de procesamiento
 	for folderAnio in listaDeArchivos:
 
@@ -117,87 +123,75 @@ def main():
 				data = data.loc[data['Lat'] > 17.43]
 				data = data.loc[data['Lat'] < 25.23]
 
-				# ciclo para generar información
-				for index, row in dataAntigranizo.iterrows():
-					# determinar fecha
-					#year, month, day = fecha.split('-')
-					year = fecha[0:4]
-					month = fecha[4:6]
-					day = fecha[6:8]
+				# obtener valores de x, y
+				lons = np.array(data['Long'])
+				lats = np.array(data['Lat'])
 
-					#print("***** {},{},{}".format(year, month, day))
-					# generar np arrays
-					Lat = np.array(data['Lat'])
-					Long = np.array(data['Long'])
-					Rain = np.array(data['Prec'])
+				#%% iniciar la gráfica
+				plt.clf()
 
-					# Punto a evaluar
-					pointLat = float(row['Lat'])
-					pointLong = float(row['Long'])
-					pointEstado = row['Estado']
-					pointNumber = row['ID']
-					pointNombre = row['Nombre']
+				# agregar locación de Coordenadas_caniones
+				xC = np.array(dataAntigranizo['Long'])
+				yC = np.array(dataAntigranizo['Lat'])
+				#plt.scatter(xC, yC,3, marker='o', color='r', zorder=25)
+				# fig = plt.figure(figsize=(48,24))
+				m = Basemap(projection='mill',llcrnrlat=17.43,urcrnrlat=25.23,llcrnrlon=-106.49,urcrnrlon=-97.5,resolution='h')
 
-					# distancias
-					d1 = 0.0
-					d2 = 0.0
-					d3 = 0.0
-					pointIndex1 = 0.0
-					pointIndex2 = 0.0
-					pointIndex3 = 0.0
+				# generar lats, lons
+				x, y = m(lons, lats)
 
-					# Selección de los puntos para interpolación
-					for i in range(len(Lat)):
-						distanceBetweenPoints = 0.0
-						differenceX = pointLong - Long[i]
-						differenceY = pointLat - Lat[i]
-						sumDifferenceXY = pow(differenceX, 2.0) + pow(differenceY, 2.0)
-						distanceBetweenPoints = math.sqrt(sumDifferenceXY)
-						if i == 0:
-							d1 = distanceBetweenPoints
-							pointIndex1 = i
-							d2 = distanceBetweenPoints
-							pointIndex2 = i
-							d3 = distanceBetweenPoints
-							pointIndex3 = i
-						if distanceBetweenPoints < d1:
-							d3 = d2
-							pointIndex3 = pointIndex2
-							d2 = d1
-							pointIndex2 = pointIndex1
-							d1 = distanceBetweenPoints
-							pointIndex1 = i
-						if distanceBetweenPoints > d1 and distanceBetweenPoints < d2:
-							d3 = d2
-							pointIndex3 = pointIndex2
-							d2 = distanceBetweenPoints
-							pointIndex2 = i
-						if distanceBetweenPoints > d2 and distanceBetweenPoints < d3:
-							d3 = distanceBetweenPoints
-							pointIndex3 = i
+				# numero de columnas y filas
+				numCols = len(x)
+				numRows = len(y)
 
-					# intepolación
-					k = 2.0
-					w1 = 0.0
-					w2 = 0.0
-					w3 = 0.0
-					zGraupel = 0.0
+				# generar xi, yi
+				xi = np.linspace(x.min(), x.max(), numCols)
+				yi = np.linspace(y.min(), y.max(), numRows)
 
-					inverseSum = pow((1 / d1),k) + pow((1 / d2),k) + pow((1 / d3),k)
-					w1 = 1 / pow(d1,k) / inverseSum
-					w2 = 1 / pow(d2,k) / inverseSum
-					w3 = 1 / pow(d3,k) / inverseSum
+				# generar el meshgrid
+				xi, yi = np.meshgrid(xi, yi)
 
-					zRain = (w1 * Rain[pointIndex1]) + (w2 * Rain[pointIndex2]) + (w3 * Rain[pointIndex3])
+				# generar zi
+				z = np.array(data['Prec'])
+				zi = gd((x,y), z, (xi,yi), method='cubic')
 
-					# Estructura
-					dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zRain)
+				#clevs
+				clevs = [1,5,10,20,30,50,70,100,150,300,500]
+				#clevs = [0,5,10,15,20,25,30,45,60,75]
+
+				#%% contour plot
+				cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='rainbow')
+
+				# draw map details
+				#m.drawcoastlines()
+
+				#m.drawstates(linewidth=0.7)
+				#m.drawcountries()
+
+				#%% read municipios shape file
+				#m.readshapefile('shapes/MunicipiosAgs', 'Municipios')
+				m.readshapefile('shapes/Estados', 'Estados')
+
+				m.scatter(xC, yC, latlon=True,s=1, marker='o', color='r', zorder=25)
+
+				#%% colorbar
+				cbar = m.colorbar(cs, location='bottom', pad="5%")
+				cbar.set_label('mm')
+				tituloTemporalParaElMapa = "Precipitación para la hora: {}".format(nombreTemporalHora)
+				plt.title(tituloTemporalParaElMapa)
+				# Mac /Users/jorgemauricio/Documents/Research/proyectoGranizo/Maps/{}_{}.png
+				# Linux /home/jorge/Documents/Research/proyectoGranizo/Maps/{}_{}.png
+				nombreTemporalParaElMapa = "/home/jorge/Documents/Research/proyectoGranizo/data/mapsNASA/{}_{}.png".format(tempfecha,minutos)
+				plt.annotate('@2018 INIFAP', xy=(-102,22), xycoords='figure fraction', xytext=(0.45,0.45), color='g', zorder=50)
+
+				plt.savefig(nombreTemporalParaElMapa, dpi=300)
+				print('****** Genereate: {}'.format(nombreTemporalParaElMapa))
 
 				print(nombreArchivoParaPandas)
 				eliminarCSVTemporal(nombreArchivoParaPandas)
 
 	#%% Guardar a CSV
-	fileName = 'data/dataFromCanionesTestNASA.csv'
+	fileName = 'data/dataFromCanionesTestNASA_2014.csv'
 	textFile = open(fileName, "w")
 	textFile.write(dataBaseStructureCaniones)
 	textFile.close()

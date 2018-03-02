@@ -45,7 +45,7 @@ def main():
 	rutaTemporalDeArchivos = "/media/jorge/backup1/gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.04"
 	# generar lista de archvos para procesamiento
 	#listaDeArchivos = [x for x in os.listdir(rutaTemporalDeArchivos) if x.endswith('')]
-	listaDeArchivos = ['2016']
+	listaDeArchivos = ['2017']
 	# ciclo de procesamiento
 	for folderAnio in listaDeArchivos:
 
@@ -197,7 +197,7 @@ def main():
 				eliminarCSVTemporal(nombreArchivoParaPandas)
 
 	#%% Guardar a CSV
-	fileName = 'data/dataFromCanionesTestNASA.csv'
+	fileName = 'data/dataFromCanionesTestNASA_2017.csv'
 	textFile = open(fileName, "w")
 	textFile.write(dataBaseStructureCaniones)
 	textFile.close()

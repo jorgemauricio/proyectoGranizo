@@ -197,7 +197,7 @@ def main():
 				eliminarCSVTemporal(nombreArchivoParaPandas)
 
 	#%% Guardar a CSV
-	fileName = 'data/dataFromCanionesTestNASA.csv'
+	fileName = 'data/dataFromCanionesTestNASA_2016.csv'
 	textFile = open(fileName, "w")
 	textFile.write(dataBaseStructureCaniones)
 	textFile.close()

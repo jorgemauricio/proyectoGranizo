@@ -22,7 +22,7 @@ def main():
 	listaDeFechas = [x for x in os.listdir('/media/jorge/U/WRF_Granizo') if x.endswith('')]
 
 	# obtener coordenadas cañones dataAntigranizo
-	dataAntigranizo = pd.read_csv("data/Coordenadas_caniones.csv")
+	dataAntigranizo = pd.read_csv("../data/Coordenadas_caniones.csv")
 
 	#%% generar info
 	#%% -106.49 > Long > -97.5
@@ -144,10 +144,11 @@ def main():
 				zGraupel = (w1 * Graupel[pointIndex1]) + (w2 * Graupel[pointIndex2]) + (w3 * Graupel[pointIndex3])
 
 				# Estructura
-				dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zGraupel, zRain, zTpro)
+				dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora, zGraupel*math.sin(.75), zRain*math.sin(.75), zTpro*math.sin(.75))
+				dataBaseStructureCaniones += '{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(pointNumber, pointEstado, pointNombre, pointLong, pointLat, year, month, day, nombreTemporalHora+0.5, zGraupel*math.sin(.25), zRain*math.sin(.25), zTpro*math.sin(.25))
 
 	#%% Guardar a CSV
-	fileName = 'data/datos_inteporlados_1hr_wrf.csv'
+	fileName = 'data/datos_inteporlados_30min_wrf.csv'
 	textFile = open(fileName, "w")
 	textFile.write(dataBaseStructureCaniones)
 	textFile.close()
