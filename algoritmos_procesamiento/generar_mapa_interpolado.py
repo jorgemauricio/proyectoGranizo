@@ -29,7 +29,7 @@ def main():
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
     # número de prueba
-    prueba = 5
+    prueba = 6
 
     # nombre del archivo
     nombreTemporalArchivo = "{}/data/Resultado_{}.csv".format(path, prueba)
