@@ -3,7 +3,7 @@
 """
 #######################################
 # Script que permite crear gráfica histórica
-# a partir de datos de precipitación de la NASA
+# a partir de datos de precipitación del WRF
 # Author: Jorge Mauricio
 # Email: jorge.ernesto.mauricio@gmail.com
 # Date: 2018-02-01
