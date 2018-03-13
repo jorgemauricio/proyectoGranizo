@@ -29,7 +29,7 @@ def main():
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
     # nombre del archivo
-    nombreTemporalArchivo = "{}/data/compilado_datos_NASA.csv".format(path)
+    nombreTemporalArchivo = "{}/data/data_from_wrf_30min_post_processing.csv".format(path)
 
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
@@ -40,8 +40,7 @@ def main():
         dataTemp = data.loc[data["Nombre"] == i]
 
         # generar formato horario
-        dataTemp["Hora"] = dataTemp.apply(lambda x: generarHora(x["Hour"]), axis=1)
-        dataTemp["Fecha"] = dataTemp.apply(lambda x: generarFecha(x["Year"], x["Month"], x["Day"], x["Hora"]), axis=1)
+        dataTemp["Fecha"] = dataTemp.apply(lambda x: generarFecha(x["Year"], x["Month"], x["Day"], x["Hora_Formato"]), axis=1)
         dataTemp['Fecha'] = dataTemp['Fecha'].astype('datetime64[ns]')
         dataTemp = dataTemp.sort_values(by="Fecha")
 
@@ -60,7 +59,7 @@ def main():
 
             # obtener x, y , e
             x = np.array(dataFecha.index)
-            y = np.array(dataFecha["RainIMR"])
+            y = np.array(dataFecha["RainWRF"])
 
             # configurar línea
             line, = ax.plot(x, y, lw=2)
@@ -75,7 +74,7 @@ def main():
             ax.set_title(tituloGrafica)
 
             # guardar gráfica
-            nombreTemporalGrafica = "data/graphs/{}_{}_historica.png".format(j,i)
+            nombreTemporalGrafica = "data/graphs/{}_{}_historica_wrf.png".format(j,i)
             plt.savefig(nombreTemporalGrafica, dpi=600)
 
             #print

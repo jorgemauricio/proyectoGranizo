@@ -29,15 +29,16 @@ def main():
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
     # nombre del archivo
-    nombreTemporalArchivo = "{}/data/datos_inteporlados_30min_wrf.csv".format(path)
+    nombreTemporalArchivo = "{}/data/data_from_wrf_30min.csv".format(path)
 
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
 
+    # estandarizar la hora
     data["Hora_Formato"] = data.apply(lambda x: convertir_hora_decimal_a_hora_minutal(x["Hour"]), axis=1)
 
     # guardar csv
-    data.to_csv("data/datos_interpolados_30_min_con_formato_wrf-csv")
+    data.to_csv("data/data_from_wrf_30min_post_processing.csv")
 
 def convertir_hora_decimal_a_hora_minutal(h):
     h = str(h)
