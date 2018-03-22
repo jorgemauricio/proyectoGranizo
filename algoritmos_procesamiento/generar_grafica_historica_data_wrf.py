@@ -29,10 +29,13 @@ def main():
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
     # nombre del archivo
-    nombreTemporalArchivo = "{}/data/data_from_wrf_30min_post_processing.csv".format(path)
+    nombreTemporalArchivo = "{}/data/Resultado_wrf_1.csv".format(path)
 
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
+
+    # datos del 2014 al 2017
+    data = data.loc[(data["Year"] >= 2014) & (data["Year"] <= 2017)]
 
     # iniciar con el procesamiento
     for i in data["Nombre"].unique():
@@ -51,7 +54,7 @@ def main():
         plt.clf()
 
         # configurar tamaño de gráfica
-        fig = plt.figure(figsize=(50,5))
+        fig = plt.figure(figsize=(25,5))
         ax = fig.add_subplot(111)
 
         # obtener x, y , e
@@ -59,19 +62,19 @@ def main():
         y = np.array(dataTemp["RainWRF"])
 
         # configurar línea
-        line, = ax.plot(x, y, lw=2)
+        line, = ax.plot(x, y, lw=2, color='r')
 
         # generar títulos
         tituloGrafica = "CAÑON ANTIGRANIZO: {}".format(i)
 
         # configurar títulos
-        ax.set_xlabel("FECHA")
+        #ax.set_xlabel("FECHA")
         ax.set_ylabel("PP (mm)")
-        ax.set_title(tituloGrafica)
+        #ax.set_title(tituloGrafica)
 
         # guardar gráfica
-        nombreTemporalGrafica = "data/graphs/{}_historica_wrf.png".format(i)
-        plt.savefig(nombreTemporalGrafica, dpi=600)
+        nombreTemporalGrafica = "data/graphs/historicas/{}_historica_wrf.png".format(i)
+        plt.savefig(nombreTemporalGrafica, dpi=600, bbox_inches='tight')
 
         #print
         print("Graph: {}".format(i))

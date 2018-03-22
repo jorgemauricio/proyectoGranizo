@@ -29,10 +29,12 @@ def main():
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
     # nombre del archivo
-    nombreTemporalArchivo = "{}/data/compilado_datos_NASA.csv".format(path)
+    nombreTemporalArchivo = "{}/data/data_nasa_area_influencia.csv".format(path)
 
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
+
+    data["areaInfluencia"] = data["areaInfluencia"] / 21.16
 
     # iniciar con el procesamiento
     for i in data["Nombre"].unique():
@@ -45,37 +47,41 @@ def main():
         dataTemp['Fecha'] = dataTemp['Fecha'].astype('datetime64[ns]')
         dataTemp = dataTemp.sort_values(by="Fecha")
 
-        dataTemp.index = dataTemp["Fecha"]
-        dataTemp.index = pd.to_datetime(dataTemp.index)
+        # ciclo por Año
+        for j in dataTemp["Year"].unique():
+            dataFecha = dataTemp.loc[data["Year"] == j]
+            dataFecha.index = dataFecha["Fecha"]
+            dataFecha.index = pd.to_datetime(dataFecha.index)
 
-        #iniciar gráfica
-        plt.clf()
+            #iniciar gráfica
+            plt.clf()
 
-        # configurar tamaño de gráfica
-        fig = plt.figure(figsize=(25,5))
-        ax = fig.add_subplot(111)
+            # configurar tamaño de gráfica
+            fig = plt.figure(figsize=(15,5))
+            ax = fig.add_subplot(111)
 
-        # obtener x, y , e
-        x = np.array(dataTemp.index)
-        y = np.array(dataTemp["RainIMR"])
+            # obtener x, y , e
+            x = np.array(dataFecha.index)
+            y = np.array(dataFecha["areaInfluencia"])
 
-        # configurar línea
-        line, = ax.plot(x, y, lw=2)
+            # configurar línea
+            line, = ax.plot(x, y, lw=2)
 
-        # generar títulos
-        tituloGrafica = "CAÑON ANTIGRANIZO: {}".format(i)
+            # generar títulos
+            #tituloGrafica = "CAÑON ANTIGRANIZO: {}\nFECHA: {}".format(i,j)
+            #tituloGrafica = "CAÑON ANTIGRANIZO: {}".format(i)
 
-        # configurar títulos
-        ax.set_xlabel("FECHA")
-        ax.set_ylabel("PP (mm)")
-        ax.set_title(tituloGrafica)
+            # configurar títulos
+            # ax.set_xlabel("FECHA")
+            ax.set_ylabel("PP (mm)")
+            #ax.set_title(tituloGrafica)
 
-        # guardar gráfica
-        nombreTemporalGrafica = "data/graphs/{}_historica.png".format(i)
-        plt.savefig(nombreTemporalGrafica, dpi=600)
+            # guardar gráfica
+            nombreTemporalGrafica = "data/graphs/{}_{}_historica_af.png".format(j,i)
+            plt.savefig(nombreTemporalGrafica, dpi=600)
 
-        #print
-        print("Graph: {}".format(i))
+            #print
+            print("Graph: {}".format(i))
 
 def generarFecha(y,m,d,h):
     return "{}-{}-{} {}".format(y,complementarValor(m),complementarValor(d),h)

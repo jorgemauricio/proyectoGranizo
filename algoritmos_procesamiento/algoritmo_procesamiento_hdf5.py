@@ -32,7 +32,7 @@ def main():
 	for nombre in listaDeArchivos:
 		# ruta temporal de archivo
 		nombreTemporalArchivo = "data/hdf5/{}".format(nombre)
-		
+
 		#lectura del hdf5
 		f = h5py.File(nombreTemporalArchivo, 'r')
 
@@ -43,15 +43,15 @@ def main():
 		lon = np.array(grid['lon'])
 		lat = np.array(grid['lat'])
 		precipitation = np.array(grid['precipitationCal'])
-		
+
 		# crear la variable que guardara el texto
 		dataText = "Long,Lat,Prec\n"
 		for i in range(lon.shape[0]):
 		    for j in range(lat.shape[0]):
 		        tempText = "{},{},{}\n".format(lon[i], lat[j], precipitation[i,j])
 		        dataText += tempText
-		
-		
+
+
 		# generar variables extras
 		nombreEnArray = nombre.split('.')
 
@@ -117,9 +117,10 @@ def main():
 
 		clevs = np.linspace(z.min(), z.max() + 5, 10)
 		#clevs = [0,5,10,15,20,25,30,45,60,75]
+		clevs = [1,5,10,30,50,70,100,150,300,500]
 
 		#%% contour plot
-		cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
+		cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='rainbow')
 
 		# draw map details
 		#m.drawcoastlines()

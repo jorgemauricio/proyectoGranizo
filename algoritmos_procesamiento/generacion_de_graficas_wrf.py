@@ -37,6 +37,9 @@ def main():
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
 
+    # datos del 2014 al 2017
+    data = data.loc[(data["Year"] >= 2014) & (data["Year"] <= 2017)]
+
     # generar dataFrame para graficas
     dataEventos = data[data["validacionEvento"] == 1]
 
@@ -64,7 +67,7 @@ def main():
         plt.clf()
 
         # configurar tamaño de gráfica
-        fig = plt.figure(figsize=(24,5))
+        fig = plt.figure(figsize=(15,5))
         ax = fig.add_subplot(111)
 
         # obtener x, y , e
@@ -73,22 +76,22 @@ def main():
         e = np.array(dataGrafica["validacionEvento"])
 
         # configurar línea
-        line, = ax.plot(x, y, lw=2)
+        line, = ax.plot(x, y, lw=2, color='r')
 
         # generar títulos
         tituloGrafica = "CAÑON ANTIGRANIZO: {}\n{}-{}-{}".format(nombreEstacion, anio, mes, dia)
 
         # configurar títulos
-        ax.set_xlabel("HORA")
+        #ax.set_xlabel("HORA")
         ax.set_ylabel("PP (mm)")
-        ax.set_title(tituloGrafica)
+        #ax.set_title(tituloGrafica)
 
         # crear anotación
         ax.annotate('EVENTO', xy=(x[e.argmax()]+1, y.max()/2), xytext=(x[e.argmax()]+2, y.max()/2), arrowprops=dict(facecolor='red', shrink=0.02))
 
         # guardar gráfica
-        nombreTemporalGrafica = "data/graphs/{}_{}-{}-{}".format(nombreEstacion, anio, mes, dia)
-        plt.savefig(nombreTemporalGrafica, dpi=300)
+        nombreTemporalGrafica = "data/graphs/eventos/{}_{}-{}-{}_wrf.png".format(nombreEstacion, anio, mes, dia)
+        plt.savefig(nombreTemporalGrafica, dpi=600, bbox_inches='tight')
 
         # print
         print("Graph: {} Fecha: {}-{}-{}".format(nombreEstacion, anio, mes, dia))

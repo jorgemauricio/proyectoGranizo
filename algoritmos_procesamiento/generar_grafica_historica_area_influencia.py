@@ -29,7 +29,7 @@ def main():
     path = "/home/jorge/Documents/Research/proyectoGranizo"
 
     # nombre del archivo
-    nombreTemporalArchivo = "{}/data/compilado_datos_NASA.csv".format(path)
+    nombreTemporalArchivo = "{}/data/data_nasa_area_influencia.csv".format(path)
 
     # leer csv
     data = pd.read_csv(nombreTemporalArchivo)
@@ -45,6 +45,7 @@ def main():
         dataTemp['Fecha'] = dataTemp['Fecha'].astype('datetime64[ns]')
         dataTemp = dataTemp.sort_values(by="Fecha")
 
+        dataTemp["areaInfluencia2"] = dataTemp["areaInfluencia"] / 21.26
         dataTemp.index = dataTemp["Fecha"]
         dataTemp.index = pd.to_datetime(dataTemp.index)
 
@@ -52,12 +53,12 @@ def main():
         plt.clf()
 
         # configurar tamaño de gráfica
-        fig = plt.figure(figsize=(25,5))
+        fig = plt.figure(figsize=(50,5))
         ax = fig.add_subplot(111)
 
         # obtener x, y , e
         x = np.array(dataTemp.index)
-        y = np.array(dataTemp["RainIMR"])
+        y = np.array(dataTemp["areaInfluencia2"])
 
         # configurar línea
         line, = ax.plot(x, y, lw=2)
@@ -71,7 +72,7 @@ def main():
         ax.set_title(tituloGrafica)
 
         # guardar gráfica
-        nombreTemporalGrafica = "data/graphs/{}_historica.png".format(i)
+        nombreTemporalGrafica = "data/graphs/{}_historica_af.png".format(i)
         plt.savefig(nombreTemporalGrafica, dpi=600)
 
         #print

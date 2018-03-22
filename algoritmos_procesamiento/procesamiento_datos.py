@@ -100,7 +100,7 @@ def main():
         data[rango] = [1 if x == rango else 0 for x in data["Rango_previo"]]
 
     # guardar archivo a CSV
-    nombreArchivoFinal = "{}/data/Resultado_6.csv".format(path)
+    nombreArchivoFinal = "{}/data/Resultado_7.csv".format(path)
     data.to_csv(nombreArchivoFinal, index=False)
 
 def generarRangoPrevio(valor):
@@ -140,7 +140,7 @@ def generarRangoPosterior(valor):
         return ">30post"
 
 def validacionSeguimiento(valorActual, valorPost, valorPost2):
-    if valorActual > 20 and valorPost == 0 and valorPost2 == 0:
+    if valorActual > 15 and valorPost == 0 and valorPost2 == 0:
         return 1
     else:
         return 0
