@@ -78,7 +78,7 @@ def main():
 
             # guardar gráfica
             nombreTemporalGrafica = "data/graphs/{}_{}_historica_af.png".format(j,i)
-            plt.savefig(nombreTemporalGrafica, dpi=600)
+            plt.savefig(nombreTemporalGrafica, dpi=600, bbox_inches='tight')
 
             #print
             print("Graph: {}".format(i))

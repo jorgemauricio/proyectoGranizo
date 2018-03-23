@@ -67,7 +67,7 @@ def main():
         plt.clf()
 
         # configurar tamaño de gráfica
-        fig = plt.figure(figsize=(24,5))
+        fig = plt.figure(figsize=(15,5))
         ax = fig.add_subplot(111)
 
         # obtener x, y , e
@@ -82,16 +82,16 @@ def main():
         tituloGrafica = "CAÑON ANTIGRANIZO: {}\n{}-{}-{}".format(nombreEstacion, anio, mes, dia)
 
         # configurar títulos
-        ax.set_xlabel("HORA")
+        #ax.set_xlabel("HORA")
         ax.set_ylabel("PP (mm)")
-        ax.set_title(tituloGrafica)
+        #ax.set_title(tituloGrafica)
 
         # crear anotación
         ax.annotate('EVENTO', xy=(x[e.argmax()]+1, y.max()/2), xytext=(x[e.argmax()]+2, y.max()/2), arrowprops=dict(facecolor='red', shrink=0.02))
 
         # guardar gráfica
-        nombreTemporalGrafica = "data/graphs/{}_{}-{}-{}_af.png".format(nombreEstacion, anio, mes, dia)
-        plt.savefig(nombreTemporalGrafica, dpi=300)
+        nombreTemporalGrafica = "data/graphs/eventos_nasa_{}_{}-{}-{}_af.png".format(nombreEstacion, anio, mes, dia)
+        plt.savefig(nombreTemporalGrafica, dpi=600, bbox_inches='tight')
 
         # print
         print("Graph: {} Fecha: {}-{}-{}".format(nombreEstacion, anio, mes, dia))

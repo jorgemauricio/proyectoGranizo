@@ -55,7 +55,7 @@ def main():
             plt.clf()
 
             # configurar tamaño de gráfica
-            fig = plt.figure(figsize=(25,5))
+            fig = plt.figure(figsize=(15,5))
             ax = fig.add_subplot(111)
 
             # obtener x, y , e
@@ -72,11 +72,11 @@ def main():
             # configurar títulos
             # ax.set_xlabel("FECHA")
             ax.set_ylabel("PP (mm)")
-            ax.set_title(tituloGrafica)
+            #ax.set_title(tituloGrafica)
 
             # guardar gráfica
             nombreTemporalGrafica = "data/graphs/{}_{}_historica.png".format(j,i)
-            plt.savefig(nombreTemporalGrafica, dpi=600)
+            plt.savefig(nombreTemporalGrafica, dpi=600, bbox_inches='tight')
 
             #print
             print("Graph: {}".format(i))
